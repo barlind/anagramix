@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+html, body, #root {
+  /* Fill the viewport on modern browsers */
+  height: 100dvh;
+  height: 100svh;
+  /* Standard vh fallback */
+  height: 100vh;
+  /* iOS standalone fill */
+  
+  font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', 'Arial', sans-serif;
+}

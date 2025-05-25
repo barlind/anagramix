@@ -1,0 +1,134 @@
+/* Root container */
+#root {
+  height: 100dvh;
+  height: 100svh;
+  height: 100vh;
+  overflow: hidden;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  background-color: #000000;
+  box-sizing: border-box;
+}
+
+/* App title */
+h1 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #FFFFFF;
+  text-align: center;
+  margin: 12px 0;
+}
+
+/* Form input and submit button */
+input {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  font-size: 17px;
+  border-radius: 12px;
+  background-color: #1E1E1E;
+  border: 1px solid #3C3C3C;
+  box-sizing: border-box;
+}
+
+.bottom-row {
+  border-color: #3C3C3C;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Dark mode colors */
+#root,
+input,
+.tile-button,
+.space-button,
+.lock-toggle {
+  background-color: #1E1E1E;
+  color: #FFFFFF;
+}
+
+/* Glowing pulse animation for placeholder matches */
+@keyframes glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+  }
+}
+
+.glow {
+  animation: glow 0.5s ease-in-out 2;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #FFFFFF;
+  background-color: #2C2C2E;
+  border: 1px solid #3C3C3C;
+}
+
+/* Tile buttons */
+.tile-button {
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  margin: 4px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  background-color: #1E1E1E;
+  border: 1px solid #3C3C3C;
+  font-size: 20px;
+  color: #FFFFFF;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+/* Tile buttons */
+.tile-button-space {
+  border: 1px solid #3939395e
+}
+
+/* Placeholder for moved letters */
+.placeholder {
+  border: 1px dashed #3C3C3C;
+  background-color: transparent;
+  color: transparent;
+  width: 54px;
+  height: 54px;
+}
+
+/* Space button */
+.space-button {
+  flex: 1;
+  height: 56px;
+  background-color: #2C2C2E;
+  color: #FFFFFF;
+  border: 1px solid #3C3C3C;
+  margin-top: 15px;
+}
+
+.start-button {
+  height: 56px;
+  background-color: #2C2C2E;
+  color: #FFFFFF;
+  border: 1px solid #3C3C3C;
+}
+
+/* Lock toggle */
+.lock-toggle {
+  width: 56px;
+  height: 56px;
+  margin-top: 15px;
+  background-color: #2C2C2E;
+  color: #FFFFFF;
+  border: 1px solid #3C3C3C;
+}
