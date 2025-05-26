@@ -183,81 +183,84 @@ export default function App() {
     >
       <div className="flex flex-col h-full">
       <TopMenuBar
-        onLogoClick={() => setView('countdown')}
+        onLogoClick={() => {
+          if (view === 'game' && !window.confirm('Do you want to abandon the current game?')) return;
+          setView('countdown');
+        }}
         onHelpClick={() => setView('help')}
       />
         {view === 'countdown' && <CountdownBuilder onComplete={letters => { setInitial(letters.map((c,i)=>({id:i,char:c}))); setView('game'); }} />}
         {view === 'game' && (
           <div className="flex flex-col h-full">
-            {/* Upper region */}
+        {/* Upper region */}
+        <div
+          ref={setUpperRef}
+          className="relative overflow-hidden p-4"
+          style={{ height: '40dvh', touchAction: 'none' }}
+          onTouchStart={onDragStart}
+          onTouchEnd={onDragEndUpper}
+          onPointerDown={onDragStart}
+          onPointerUp={onDragEndUpper}
+        >
+          <SortableContext id="upper-context" items={initial.map(t=>`upper-${t.id}`)} strategy={horizontalListSortingStrategy}>
             <div
-              ref={setUpperRef}
-              className="relative overflow-hidden p-4"
-              style={{ height: '40dvh', touchAction: 'none' }}
-              onTouchStart={onDragStart}
-              onTouchEnd={onDragEndUpper}
-              onPointerDown={onDragStart}
-              onPointerUp={onDragEndUpper}
+          ref={upperInnerRef}
+          id="upper-container"
+          className="flex flex-wrap justify-center"
+          style={{
+            transform: upperAlign === 'flex-start'
+              ? 'translateY(0)'
+              : upperAlign === 'middle'
+              ? `translateY(${upperMax/2}px)`
+              : `translateY(${upperMax}px)`,
+            transition: 'transform 800ms ease'
+          }}
             >
-              <SortableContext id="upper-context" items={initial.map(t=>`upper-${t.id}`)} strategy={horizontalListSortingStrategy}>
-                <div
-                  ref={upperInnerRef}
-                  id="upper-container"
-                  className="flex flex-wrap justify-center"
-                  style={{
-                    transform: upperAlign === 'flex-start'
-                      ? 'translateY(0)'
-                      : upperAlign === 'middle'
-                      ? `translateY(${upperMax/2}px)`
-                      : `translateY(${upperMax}px)`,
-                    transition: 'transform 800ms ease'
-                  }}
-                >
-                  {initial.map(tile => (
-                    removed.includes(tile.id)
-                      ? <div key={tile.id} className="tile-button placeholder" onClick={()=>handlePlaceholderClick(tile.id)}/>
-                      : <Tile key={tile.id} id={`upper-${tile.id}`} char={tile.char} disabled={removed.includes(tile.id)} ariaPressed={false} onClick={()=>moveDown(tile)}/>
-                  ))}
-                </div>
-              </SortableContext>
+          {initial.map(tile => (
+            removed.includes(tile.id)
+              ? <div key={tile.id} className="tile-button placeholder" onClick={()=>handlePlaceholderClick(tile.id)}/>
+              : <Tile key={tile.id} id={`upper-${tile.id}`} char={tile.char} disabled={removed.includes(tile.id)} ariaPressed={false} onClick={()=>moveDown(tile)}/>
+          ))}
             </div>
-            {/* Separator */}
-            <DemarcationLine />
-            {/* Lower region */}
+          </SortableContext>
+        </div>
+        {/* Separator */}
+        <DemarcationLine />
+        {/* Lower region */}
+        <div
+          ref={setLowerRef}
+          className="relative overflow-hidden p-4"
+          style={{ height: '40dvh', touchAction: 'none' }}
+          onTouchStart={onDragStart}
+          onTouchEnd={onDragEndLower}
+          onPointerDown={onDragStart}
+          onPointerUp={onDragEndLower}
+        >
+          <SortableContext id="lower-context" items={lower.map(t=>`lower-${t.id}`)} strategy={horizontalListSortingStrategy}>
             <div
-              ref={setLowerRef}
-              className="relative overflow-hidden p-4"
-              style={{ height: '40dvh', touchAction: 'none' }}
-              onTouchStart={onDragStart}
-              onTouchEnd={onDragEndLower}
-              onPointerDown={onDragStart}
-              onPointerUp={onDragEndLower}
+          ref={lowerInnerRef}
+          id="lower-container"
+          className="flex flex-wrap justify-center"
+          style={{
+            transform: lowerAlign === 'flex-start'
+              ? 'translateY(0)'
+              : lowerAlign === 'middle'
+              ? `translateY(${lowerMax/2}px)`
+              : `translateY(${lowerMax}px)`,
+            transition: 'transform 800ms ease'
+          }}
             >
-              <SortableContext id="lower-context" items={lower.map(t=>`lower-${t.id}`)} strategy={horizontalListSortingStrategy}>
-                <div
-                  ref={lowerInnerRef}
-                  id="lower-container"
-                  className="flex flex-wrap justify-center"
-                  style={{
-                    transform: lowerAlign === 'flex-start'
-                      ? 'translateY(0)'
-                      : lowerAlign === 'middle'
-                      ? `translateY(${lowerMax/2}px)`
-                      : `translateY(${lowerMax}px)`,
-                    transition: 'transform 800ms ease'
-                  }}
-                >
-                  {lower.map(tile => (
-                    <Tile key={tile.id} id={`lower-${tile.id}`} char={tile.char} ariaPressed={false} onClick={()=>moveUp(tile)} className={glowIds.includes(tile.id)?'glow':''}/>
-                  ))}
-                </div>
-              </SortableContext>
+          {lower.map(tile => (
+            <Tile key={tile.id} id={`lower-${tile.id}`} char={tile.char} ariaPressed={false} onClick={()=>moveUp(tile)} className={glowIds.includes(tile.id)?'glow':''}/>
+          ))}
             </div>
-            {/* Buttons */}
-            <div className="bottom-row flex items-center gap-2 mb-4 px-4">
-              <LockToggle onClick={toggleLock} locked={locked.length>0}/>
-              <SpaceButton onClick={addSpace} className="flex-1">Space</SpaceButton>
-            </div>
+          </SortableContext>
+        </div>
+        {/* Buttons */}
+        <div className="bottom-row flex items-center gap-2 mb-4 px-4">
+          <LockToggle onClick={toggleLock} locked={locked.length>0}/>
+          <SpaceButton onClick={addSpace} className="flex-1">Space</SpaceButton>
+        </div>
           </div>
         )}
         {view === 'help' && <HelpModal onClose={() => setView('game')} />}
