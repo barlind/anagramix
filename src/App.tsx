@@ -21,9 +21,11 @@ import Tile from './components/Tile'
 import SpaceButton from './components/SpaceButton'
 import LockToggle from './components/LockToggle';
 import TopMenuBar from './components/TopMenuBar';
+
 import CountdownBuilder from './components/CountdownBuilder';
 import HelpModal from './components/HelpModal';
 import DemarcationLine from './components/DemarcationLine';
+import { SavedSnapshot } from './components/SavedGamesDropdown';
 
 interface TileType { id: number; char: string }
 
@@ -43,6 +45,56 @@ export default function App() {
   const [lowerMax, setLowerMax] = useState(0);
   const [activeTile, _] = useState<TileType | null>(null);
   const [glowIds, setGlowIds] = useState<number[]>([]);
+  const [history, setHistory] = useState<SavedSnapshot[]>(() => {
+    try {
+      const raw = localStorage.getItem('anagramix-history');
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  });
+  // track currently loaded snapshot id (null when starting fresh)
+  const [currentSnapId, setCurrentSnapId] = useState<number | null>(null);
+  
+  // Load a saved game snapshot by id
+  const loadSavedGame = (id: number) => {
+    const snap = history.find(h => h.id === id);
+    if (!snap) return;
+    setInitial(snap.initial || []);
+    setLower(snap.lower || []);
+    setRemoved(snap.removed || []);
+    setLocked(snap.locked || []);
+    setCurrentSnapId(id);
+    setView('game');
+  };
+
+  // persist history whenever it changes
+  useEffect(() => {
+    localStorage.setItem('anagramix-history', JSON.stringify(history));
+  }, [history]);
+
+  const saveCurrentGameToHistory = () => {
+    if (initial.length === 0) return; // nothing to save
+    const snapshot = {
+      id: currentSnapId ?? Date.now(),
+      initial,
+      lower,
+      removed,
+      locked,
+    };
+
+    setHistory(prev => {
+      // if updating an existing saved game, replace it
+      const idx = prev.findIndex(s => s.id === snapshot.id);
+      if (idx >= 0) {
+        const clone = [...prev];
+        clone[idx] = snapshot;
+        return clone;
+      }
+      // else push a new snapshot
+      return [...prev, snapshot];
+    });
+  };
 
   const { setNodeRef: setUpperRef } = useDroppable({ id: 'upper-container' });
   const { setNodeRef: setLowerRef } = useDroppable({ id: 'lower-container' });
@@ -199,12 +251,25 @@ export default function App() {
       <div className="flex flex-col h-full">
       <TopMenuBar
         onLogoClick={() => {
-          if (view === 'game' && !window.confirm('Do you want to abandon the current game?')) return;
+          if (view === 'game') {
+            const wantsSave = window.confirm('Would you like to save the current game?');
+            if (wantsSave) {
+              saveCurrentGameToHistory();
+            } else {
+              // user does not want to save; if this game was previously saved, ask about deleting it
+              if (currentSnapId !== null) {
+                const wantsDelete = window.confirm('Remove this game from saved history?');
+                if (wantsDelete) {
+                  setHistory(prev => prev.filter(s => s.id !== currentSnapId));
+                }
+              }
+            }
+          }
           setView('countdown');
         }}
         onHelpClick={() => setView('help')}
       />
-        {view === 'countdown' && <CountdownBuilder onComplete={letters => { setInitial(letters.map((c,i)=>({id:i,char:c}))); setView('game'); }} />}
+        {view === 'countdown' && <CountdownBuilder saved={history} onLoad={loadSavedGame} onComplete={letters => { setInitial(letters.map((c,i)=>({id:i,char:c}))); setView('game'); }} />}
         {view === 'game' && (
           <div className="flex flex-col h-full">
         {/* Upper region */}
