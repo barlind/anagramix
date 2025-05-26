@@ -139,17 +139,13 @@ export default function App() {
     // ignore locked tiles
     if (locked.includes(tile.id)) return;
 
-    // move tile back to upper row
+    // move tile back to upper row: remove from lower and removed lists
     setLower(lower.filter(t => t.id !== tile.id));
     setRemoved(removed.filter(id => id !== tile.id));
-    setInitial([...initial, tile]);
   }
 
   const moveDown = (tile: TileType) => {
     if (tile.char.trim() === '') return; // ignore spaces
-
-    // remove from upper row first
-    setInitial(initial.filter(t => t.id !== tile.id));
 
     // only add if not already in lower
     if (!lower.some(t => t.id === tile.id)) {
@@ -236,7 +232,14 @@ export default function App() {
     }
   }, [initial, lower]);
 
-  const allMovedToLower = initial.length > 0 && initial.every(tile => removed.includes(tile.id));
+  // New helper to reset game state when returning to countdown
+  const resetGameState = () => {
+    setInitial([]);
+    setLower([]);
+    setRemoved([]);
+    setLocked([]);
+    setCurrentSnapId(null);
+  };
 
   return (
     <DndContext
@@ -265,6 +268,7 @@ export default function App() {
               }
             }
           }
+          resetGameState();
           setView('countdown');
         }}
         onHelpClick={() => setView('help')}
@@ -301,7 +305,7 @@ export default function App() {
               ? (
                 <div
                   key={tile.id}
-                  className={`tile-button placeholder ${allMovedToLower ? 'placeholder-original' : ''}`}
+                  className={`tile-button placeholder`}
                   onClick={() => handlePlaceholderClick(tile.id)}
                 >
                   { tile.char}
@@ -318,7 +322,7 @@ export default function App() {
         <div
           ref={setLowerRef}
           className="relative overflow-hidden p-4"
-          style={{ height: '40dvh', touchAction: 'none' }}
+          style={{ height: '33dvh', touchAction: 'none' }}
           onTouchStart={onDragStart}
           onTouchEnd={onDragEndLower}
           onPointerDown={onDragStart}

@@ -1,8 +1,10 @@
 /* Root container */
 #root {
-  height: 100dvh;
-  height: 100svh;
-  height: 100vh;
+  position: fixed;          /* lock viewport, prevent scroll */
+  inset: 0;                 /* top, right, bottom, left = 0 */
+          /* dynamic viewport */
+            /* fallback */
+  height: calc(var(--vh, 1vh) * 89); /* use JS-set vh */
   overflow: hidden;
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
@@ -102,7 +104,6 @@ input,
   border: 1px dashed #3C3C3C;
   background-color: transparent;
   color: rgba(255, 255, 255, 0.07); /* subtle ghost letter */
-  pointer-events: none;             /* keep it inert */
   width: 54px;
   height: 54px;
 }
