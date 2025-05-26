@@ -1,54 +1,100 @@
-# React + TypeScript + Vite
+Anagramix
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Anagramix is a mobile-first, no-scroll React app for building and playing anagrams. It features:
+	•	Count-Up Letter Selection: Choose 9 letters via vowel/consonant buttons or enter custom text.
+	•	Drag & Drop Workspace: Arrange letters in upper and lower rows with click or touch.
+	•	Swipe Alignment: Swipe tile rows to top, middle, or bottom with smooth animations.
+	•	Lock & Space Controls: Lock tiles in place; insert spaces easily.
+	•	Dark Mode & Safe Areas: Full-screen layout respects mobile safe insets, with a dark theme.
 
-Currently, two official plugins are available:
+⸻
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+🚀 Quick Start
+	1.	Clone the repo:
 
-## Expanding the ESLint configuration
+git clone https://github.com/YOUR_USERNAME/anagram-builder-app.git
+cd anagram-builder-app
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+	2.	Install dependencies:
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+npm install
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+	3.	Run in development mode (hot reload):
+
+npm run dev
+
+
+	4.	Build for production:
+
+npm run build
+
+
+	5.	Preview the production build locally:
+
+npm run serve    # requires `npm install -g serve`
+
+
+
+⸻
+
+🛠️ Features
+
+Countdown Builder
+	•	Vowel / Consonant Buttons: Randomly pull letters from a weighted pool.
+	•	Custom Input: Enter your own word to start the game.
+	•	Start Game: Unlocks when 9 letters are chosen or a custom word is entered.
+
+Anagram Workspace
+	•	Upper & Lower Rows: Click or drag letters between rows to form an anagram.
+	•	Swipe Alignment: Swipe each row to top, middle, or bottom with animated transforms.
+	•	Placeholders & Glow: Removed letters leave placeholders; clicking them pulses the missing tile.
+	•	Lock & Space: Lock tiles in place; use the Space button to insert blanks.
+
+⸻
+
+🎨 Styling & Accessibility
+	•	React + TypeScript powered by Vite starter.
+	•	Tailwind CSS utility-first styling, fully responsive.
+	•	WCAG 2.2 AA color contrast, aria-pressed states, and 44×44 dp tap targets.
+	•	Full dark mode with safe-area support (env(safe-area-inset-*)).
+
+⸻
+
+📦 Deployment
+
+This app can be deployed to GitHub Pages or any static host. Example (GitHub Pages):
+	1.	Install the deploy helper:
+
+npm install --save-dev gh-pages
+
+
+	2.	Add to package.json:
+
+"homepage": "https://YOUR_USERNAME.github.io/anagram-builder-app",
+"scripts": {
+  "predeploy": "npm run build",
+  "deploy": "gh-pages -d dist"
+}
+
+
+	3.	Run:
+
+npm run deploy
+
+
+
+⸻
+
+🤝 Contributing
+
+Contributions welcome! Feel free to open issues or submit pull requests for new features, bug fixes, or improvements.
+
+⸻
+
+📄 License
+
+This project is MIT licensed.
+
+Happy anagramming! 🧩
