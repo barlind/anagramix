@@ -28,7 +28,8 @@ import DemarcationLine from './components/DemarcationLine';
 interface TileType { id: number; char: string }
 
 export default function App() {
-  const [initial, setInitial] = useState<TileType[]>([{ id:1, char:'A'},{ id:2, char:'B'}])
+  // start with no tiles until CountdownBuilder provides them
+  const [initial, setInitial] = useState<TileType[]>([])
   const [removed, setRemoved] = useState<number[]>([])
   const [lower, setLower] = useState<TileType[]>([])
   const [locked, setLocked] = useState<number[]>([])
@@ -78,19 +79,31 @@ export default function App() {
 
   const moveUp = (tile: TileType) => {
     if (tile.char.trim() === '') {
+      // remove empty space tiles
       setLower(lower.filter(t => t.id !== tile.id));
       return;
     }
-    if (!locked.includes(tile.id)) {
-      setLower(lower.filter(t => t.id !== tile.id));
-      setRemoved(removed.filter(id => id !== tile.id));
-    }
+
+    // ignore locked tiles
+    if (locked.includes(tile.id)) return;
+
+    // move tile back to upper row
+    setLower(lower.filter(t => t.id !== tile.id));
+    setRemoved(removed.filter(id => id !== tile.id));
+    setInitial([...initial, tile]);
   }
 
   const moveDown = (tile: TileType) => {
     if (tile.char.trim() === '') return; // ignore spaces
-    setRemoved([...removed, tile.id]);
-    setLower([...lower, tile]);
+
+    // remove from upper row first
+    setInitial(initial.filter(t => t.id !== tile.id));
+
+    // only add if not already in lower
+    if (!lower.some(t => t.id === tile.id)) {
+      setLower([...lower, tile]);
+      setRemoved([...removed, tile.id]);
+    }
   }
 
   const addSpace = () => {
@@ -171,6 +184,8 @@ export default function App() {
     }
   }, [initial, lower]);
 
+  const allMovedToLower = initial.length > 0 && initial.every(tile => removed.includes(tile.id));
+
   return (
     <DndContext
       sensors={useSensors(
@@ -218,7 +233,15 @@ export default function App() {
             >
           {initial.map(tile => (
             removed.includes(tile.id)
-              ? <div key={tile.id} className="tile-button placeholder" onClick={()=>handlePlaceholderClick(tile.id)}/>
+              ? (
+                <div
+                  key={tile.id}
+                  className={`tile-button placeholder ${allMovedToLower ? 'placeholder-original' : ''}`}
+                  onClick={() => handlePlaceholderClick(tile.id)}
+                >
+                  { tile.char}
+                </div>
+              )
               : <Tile key={tile.id} id={`upper-${tile.id}`} char={tile.char} disabled={removed.includes(tile.id)} ariaPressed={false} onClick={()=>moveDown(tile)}/>
           ))}
             </div>
